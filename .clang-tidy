@@ -1,0 +1,41 @@
+# Enforced by tests/syntax-check/check-syntax.sh --tidy (and CI). No NOLINT comments anywhere: fix the code instead.
+#
+# Coding limits for every file in the repository (scripts included):
+#   file <= 500 lines, function <= 80 lines, cyclomatic complexity <= 10, nesting <= 4, parameters <= 5.
+# clang-tidy covers function length, parameters, nesting and cognitive complexity here; scripts/check-limits.sh covers
+# cyclomatic complexity (lizard) and the file length, and also checks the shell scripts.
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-exception-escape,
+  performance-*,
+  -performance-enum-size,
+  modernize-use-nullptr,
+  modernize-use-override,
+  modernize-use-using,
+  modernize-loop-convert,
+  readability-function-size,
+  readability-function-cognitive-complexity,
+  readability-else-after-return,
+  readability-redundant-*,
+  readability-container-size-empty,
+  misc-unused-*,
+  misc-redundant-expression
+WarningsAsErrors: '*'
+HeaderFilterRegex: '^.*/(src|tests)/.*$'
+CheckOptions:
+  - key: readability-function-size.LineThreshold
+    value: '80'
+  - key: readability-function-size.ParameterThreshold
+    value: '5'
+  - key: readability-function-size.NestingThreshold
+    value: '5'  # clang-tidy counts the function body as level 1, so 5 here is nesting depth 4 inside a function
+  - key: readability-function-size.StatementThreshold
+    value: '-1'
+  - key: readability-function-size.BranchThreshold
+    value: '-1'
+  - key: readability-function-size.VariableThreshold
+    value: '-1'
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '10'

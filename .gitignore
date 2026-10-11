@@ -1,0 +1,9 @@
+build*/
+*.plugin/
+.vscode/
+.idea/
+.cache/
+*.o
+*.rsrc
+.DS_Store
+compile_commands.json

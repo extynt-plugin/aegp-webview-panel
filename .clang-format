@@ -1,0 +1,10 @@
+BasedOnStyle: Google
+ColumnLimit: 110
+IndentWidth: 2
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortBlocksOnASingleLine: Empty
+DerivePointerAlignment: false
+PointerAlignment: Left
+SortIncludes: Never

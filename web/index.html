@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebView Panel</title>
+<style>
+  :root { --wvp-bg: #232323; --wvp-fg: #e6e6e6; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 12px; background: var(--wvp-bg); color: var(--wvp-fg);
+         font: 12px -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
+  h1 { font-size: 13px; margin: 0 0 10px; }
+  section { margin-bottom: 14px; }
+  label { display: block; opacity: .7; margin-bottom: 4px; }
+  textarea, input { width: 100%; padding: 6px; color: inherit; background: rgba(127,127,127,.15);
+                    border: 1px solid rgba(127,127,127,.4); border-radius: 4px; font: 12px ui-monospace, Menlo, monospace; }
+  textarea { height: 64px; resize: vertical; }
+  button { margin-top: 6px; padding: 5px 10px; color: inherit; background: rgba(127,127,127,.25);
+           border: 1px solid rgba(127,127,127,.5); border-radius: 4px; font: inherit; }
+  button:disabled { opacity: .5; }
+  output { display: block; min-height: 2.4em; margin-top: 6px; padding: 6px; white-space: pre-wrap;
+           background: rgba(127,127,127,.1); border-radius: 4px; font: 12px ui-monospace, Menlo, monospace; }
+  .error { color: #e5484d; }
+  small { opacity: .6; }
+</style>
+</head>
+<body>
+<h1>WebView Panel <small id="theme"></small></h1>
+
+<section>
+  <label>Active composition (AEGP_GetMostRecentlyUsedComp)</label>
+  <output id="comp">-</output>
+  <button id="refresh">Refresh</button>
+</section>
+
+<section>
+  <label for="script">ExtendScript (AEGP_ExecuteScript)</label>
+  <textarea id="script">app.project.numItems + " items in the project"</textarea>
+  <button id="run">Run</button>
+  <output id="result"></output>
+</section>
+
+<section>
+  <label for="keys">Keyboard check: type, select all, copy, paste, undo, arrows, Home/End</label>
+  <textarea id="keys">The quick brown fox jumps over the lazy dog.</textarea>
+</section>
+
+<script>
+  var $ = function (id) { return document.getElementById(id); };
+
+  function show(element, text, isError) {
+    element.textContent = text;
+    element.className = isError ? 'error' : '';
+  }
+
+  function refreshComp() {
+    wvp.call('comp.active_name').then(function (name) {
+      show($('comp'), name === null ? '(no composition)' : name, false);
+    }).catch(function (error) { show($('comp'), error.message, true); });
+  }
+
+  function runScript() {
+    $('run').disabled = true;
+    wvp.call('script.run', $('script').value).then(function (text) {
+      show($('result'), text, false);
+    }).catch(function (error) { show($('result'), error.message, true); })
+      .then(function () { $('run').disabled = false; });
+  }
+
+  function showTheme(theme) {
+    $('theme').textContent = theme ? (theme.dark ? 'dark ' : 'light ') + theme.background : '';
+  }
+
+  $('refresh').addEventListener('click', refreshComp);
+  $('run').addEventListener('click', runScript);
+  document.addEventListener('wvp-theme', function (event) { showTheme(event.detail); });
+  window.addEventListener('focus', refreshComp);
+  showTheme(wvp.theme);
+  refreshComp();
+</script>
+</body>
+</html>
