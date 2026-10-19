@@ -8,3 +8,4 @@ AllowShortBlocksOnASingleLine: Empty
 DerivePointerAlignment: false
 PointerAlignment: Left
 SortIncludes: Never
+FixNamespaceComments: false

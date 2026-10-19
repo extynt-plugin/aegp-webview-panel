@@ -1,4 +1,4 @@
-// Syntax-check stand-in (see Foundation/Foundation.h): the AppKit API the sources use.
+// Linux syntax-check stand-in for the AppKit API the sources use.
 #pragma once
 
 #include "Foundation/Foundation.h"

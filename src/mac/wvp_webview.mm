@@ -1,4 +1,5 @@
-// WvpWebView and the small helpers shared by the macOS files.
+// The web view subclass (takes the first click, knows whether it holds focus, gives floating windows a
+// minimum size) and the helpers shared by the macOS files.
 #import "wvp_mac.h"
 
 #include <algorithm>
@@ -18,13 +19,10 @@ std::string stdString(NSString* text) { return text ? std::string(text.UTF8Strin
 NSString* nsString(const std::string& text) { return [NSString stringWithUTF8String:text.c_str()]; }
 std::string className(id object) { return object ? stdString(NSStringFromClass([object class])) : "nil"; }
 
-}  // namespace wvp::mac
+}
 
 namespace {
 
-// A floating panel window has no minimum size and can be dragged to a sliver. The window of a docked panel is
-// After Effects' main window and is left alone. (After Effects may still override this for a floating window:
-// Mac test.)
 void limitFloatingWindow(NSWindow* window) {
   if (window == NSApp.mainWindow) return;
   const NSSize now = window.contentMinSize;
@@ -32,12 +30,10 @@ void limitFloatingWindow(NSWindow* window) {
                                  std::max(now.height, static_cast<CGFloat>(wvp::platform::kMinimumHeight))};
 }
 
-}  // namespace
+}
 
 @implementation WvpWebView
 
-// A click that activates a floating panel is also delivered to the page (the window is not key until
-// clicked).
 - (BOOL)acceptsFirstMouse:(NSEvent*)event {
   return YES;
 }

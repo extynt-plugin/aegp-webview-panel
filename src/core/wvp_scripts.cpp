@@ -1,3 +1,4 @@
+// The JavaScript every page gets: the window.wvp shim, reply and theme scripts, and text-input defaults.
 #include "wvp_scripts.h"
 
 #include "wvp_json.h"
@@ -49,7 +50,7 @@ const char* const kShimTail = R"JS(  function paint() {
   window.wvp = wvp;
 )JS";
 
-}  // namespace
+}
 
 std::string bridgeShimScript(const std::string& themeJson) {
   return std::string(kShimHead) + kShimTail + "  wvp.theme = " + themeJson + ";\n})();\n";
@@ -87,4 +88,4 @@ std::string fieldHardeningScript() {
 )JS";
 }
 
-}  // namespace wvp
+}

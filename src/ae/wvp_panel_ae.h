@@ -1,13 +1,11 @@
-// Panel registration (AEGP Workspace Panel Suite): a Window menu command that toggles the panel, and the
-// create-panel hook that hands After Effects' native view to the platform layer. Follows the SDK's Panelator
-// sample.
+// Registers the panel with the Workspace Panel Suite: a Window menu command that toggles it and the hook that
+// hands AE's native view to the platform layer. Modelled on the SDK's Panelator sample.
 #pragma once
 
 #include "wvp_sdk.h"
 
 namespace wvp {
 
-// Main thread, from the entry point. False when registration failed (logged).
 bool registerPanel(AEGP_PluginID pluginId);
 
-}  // namespace wvp
+}

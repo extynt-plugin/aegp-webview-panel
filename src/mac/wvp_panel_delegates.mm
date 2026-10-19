@@ -1,4 +1,5 @@
-// The navigation and UI delegates of WvpPanel.
+// Navigation and UI delegates. JavaScript dialogs and file pickers are answered at once without being shown,
+// since a nested event loop would stall AE's idle hook. A crashed web process reloads the page.
 #import "wvp_mac.h"
 
 #include "wvp_log.h"
@@ -29,7 +30,7 @@ WKNavigationActionPolicy policyFor(WvpPanel* panel, WKNavigationAction* action) 
   return WKNavigationActionPolicyCancel;
 }
 
-}  // namespace
+}
 
 @implementation WvpPanel (Delegates)
 
@@ -41,7 +42,6 @@ WKNavigationActionPolicy policyFor(WvpPanel* panel, WKNavigationAction* action) 
   decisionHandler(policy);
 }
 
-// WebKit's web content process died (out of memory, a crash): load the page again.
 - (void)webViewWebContentProcessDidTerminate:(WKWebView*)webView {
   guarded([self] {
     wvp::logLine("the web content process terminated, reloading");
@@ -59,9 +59,6 @@ WKNavigationActionPolicy policyFor(WvpPanel* panel, WKNavigationAction* action) 
   guarded([error] { wvp::logLine("page failed to load: " + stdString(error.localizedDescription)); });
 }
 
-// JavaScript dialogs and file pickers are answered at once. Showing one would run a nested event loop inside
-// After Effects' main thread, which stalls its idle hook for as long as the dialog is open (README,
-// "Gotchas").
 - (void)webView:(WKWebView*)webView
     runJavaScriptAlertPanelWithMessage:(NSString*)message
                       initiatedByFrame:(WKFrameInfo*)frame

@@ -1,6 +1,5 @@
-/* PiPL (plug-in property list) for the starter kit, an AEGP. Compiled by Rez into
-   Contents/Resources/wvpanel.rsrc (scripts/rez-pipl.sh), the same way the SDK's Xcode samples compile their
-   *_PiPL.r. The entry point name must match EntryPointFunc in src/ae/wvp_entry.cpp. */
+/* PiPL for the plugin, compiled by Rez into Contents/Resources/wvpanel.rsrc (scripts/rez-pipl.sh). The entry
+   point name must match EntryPointFunc in src/ae/wvp_entry.cpp. */
 #include "AEConfig.h"
 
 #ifndef AE_OS_WIN

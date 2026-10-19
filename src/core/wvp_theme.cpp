@@ -1,3 +1,4 @@
+// Light/dark classification by Rec. 709 luminance, plus the theme's CSS and JSON (no printf, so no locale).
 #include "wvp_theme.h"
 
 #include <algorithm>
@@ -12,12 +13,10 @@ constexpr double kDarkBelow = 0.5;
 
 int to8Bit(int channel16) { return std::clamp(channel16, 0, 65535) >> 8; }
 
-// Rec. 709 relative luminance of the (non-linearised) channels; good enough to pick light or dark.
 double luminanceOf(const Theme& theme) {
   return (0.2126 * theme.red + 0.7152 * theme.green + 0.0722 * theme.blue) / kChannelMax;
 }
 
-// Three decimals without printf, so the text never depends on the C locale.
 std::string formatUnit(double value) {
   const int milli = static_cast<int>(std::lround(std::clamp(value, 0.0, 1.0) * 1000.0));
   std::string fraction = std::to_string(milli % 1000);
@@ -25,7 +24,7 @@ std::string formatUnit(double value) {
   return std::to_string(milli / 1000) + "." + fraction;
 }
 
-}  // namespace
+}
 
 Theme themeFromChannels16(int red, int green, int blue) {
   Theme theme;
@@ -48,4 +47,4 @@ std::string themeJson(const Theme& theme) {
          ",\"green\":" + std::to_string(theme.green) + ",\"blue\":" + std::to_string(theme.blue) + "}";
 }
 
-}  // namespace wvp
+}

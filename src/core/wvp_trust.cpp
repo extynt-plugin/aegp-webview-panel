@@ -1,3 +1,5 @@
+// URL checks for the bridge: nothing that climbs out of the web folder or hides a separator in
+// percent-encoding, and loopback origins only.
 #include "wvp_trust.h"
 
 #include <cstddef>
@@ -10,14 +12,12 @@ bool startsWith(const std::string& text, const std::string& prefix) {
   return text.compare(0, prefix.size(), prefix) == 0;
 }
 
-// ":" followed by digits, or nothing.
 bool portIsValid(const std::string& port) {
   if (port.empty()) return true;
   if (port.size() < 2 || port.front() != ':') return false;
   return port.find_first_not_of("0123456789", 1) == std::string::npos;
 }
 
-// A url under the web folder that climbs out of it ("..") or hides a separator or dot in percent-encoding.
 bool escapesFolder(const std::string& url) {
   std::string lower;
   for (const char c : url) lower += static_cast<char>(c >= 'A' && c <= 'Z' ? c - 'A' + 'a' : c);
@@ -27,7 +27,7 @@ bool escapesFolder(const std::string& url) {
   return false;
 }
 
-}  // namespace
+}
 
 std::string originOf(const std::string& url) {
   const std::string http = "http://";
@@ -67,4 +67,4 @@ Navigation decideNavigation(const std::string& url, bool linkActivated, const st
   return Navigation::Cancel;
 }
 
-}  // namespace wvp
+}

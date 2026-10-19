@@ -1,3 +1,4 @@
+// JSON string quoting, including U+2028 and U+2029, which would end a JavaScript string literal.
 #include "wvp_json.h"
 
 #include <cstddef>
@@ -13,14 +14,12 @@ void appendUnicodeEscape(std::string& out, unsigned value) {
   for (int shift = 12; shift >= 0; shift -= 4) out += kHex[(value >> static_cast<unsigned>(shift)) & 0xFU];
 }
 
-// True for the three bytes E2 80 A8 / E2 80 A9 (U+2028, U+2029) starting at `at`.
 bool isLineSeparator(const std::string& text, std::size_t at) {
   if (at + 2 >= text.size()) return false;
   const auto byte = [&text](std::size_t index) { return static_cast<unsigned char>(text[index]); };
   return byte(at) == 0xE2U && byte(at + 1) == 0x80U && (byte(at + 2) == 0xA8U || byte(at + 2) == 0xA9U);
 }
 
-// Appends the escape for a single-byte character; returns false when the byte is copied as it is.
 bool appendEscaped(std::string& out, char c) {
   switch (c) {
     case '"':
@@ -46,7 +45,7 @@ bool appendEscaped(std::string& out, char c) {
   return true;
 }
 
-}  // namespace
+}
 
 std::string jsonQuote(const std::string& utf8) {
   std::string out = "\"";
@@ -62,4 +61,4 @@ std::string jsonQuote(const std::string& utf8) {
   return out;
 }
 
-}  // namespace wvp
+}

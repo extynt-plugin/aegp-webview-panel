@@ -1,3 +1,4 @@
+// The job queue implementation.
 #include "wvp_queue.h"
 
 #include <utility>
@@ -22,4 +23,4 @@ std::size_t JobQueue::size() const {
   return jobs_.size();
 }
 
-}  // namespace wvp
+}

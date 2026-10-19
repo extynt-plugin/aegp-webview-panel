@@ -1,5 +1,5 @@
-// Objective-C++ because the SDK's Workspace Panel header includes Cocoa (see wvp_sdk.h). No Objective-C is
-// used here.
+// Panel registration, flyout menu and Window menu hooks. Objective-C++ only because the SDK's panel header
+// pulls in Cocoa; the six-parameter SDK hooks are variadic templates to stay within the five-parameter limit.
 #include "wvp_panel_ae.h"
 
 #include <string>
@@ -16,8 +16,8 @@ namespace {
 
 static_assert(kAEGPPanelSuiteVersion1 == 1, "wvp_suites.cpp requests the panel suite by this version");
 
-const A_u_char* const kMatchName = reinterpret_cast<const A_u_char*>("wvp-panel");  // do not localize
-const char* const kMenuName = "WebView Panel";                                      // the Window menu item
+const A_u_char* const kMatchName = reinterpret_cast<const A_u_char*>("wvp-panel");
+const char* const kMenuName = "WebView Panel";
 const A_u_char* const kTitle = reinterpret_cast<const A_u_char*>("WebView Panel");
 constexpr A_long kPreferredWidth = 360;
 constexpr A_long kPreferredHeight = 640;
@@ -35,7 +35,7 @@ A_Err getSnapSizes(AEGP_PanelRefcon, A_LPoint* sizes, A_long* count) noexcept {
   sizes[0].y = platform::kMinimumHeight;
   sizes[1].x = kPreferredWidth;
   sizes[1].y = kPreferredHeight;
-  *count = 2;  // After Effects accepts at most five
+  *count = 2;
   return A_Err_NONE;
 }
 
@@ -63,9 +63,6 @@ A_Err doFlyoutCommand(AEGP_PanelRefcon refcon, AEGP_FlyoutMenuCmdID command) noe
   return A_Err_NONE;
 }
 
-// The SDK's create-panel and command hooks take six parameters, over this repository's limit of five. Each is
-// a variadic template instead: the compiler deduces the exact SDK signature from the function pointer it is
-// assigned to (see registerPanel), and the arguments are handled as one tuple.
 using CreateArgs = std::tuple<AEGP_GlobalRefcon, AEGP_CreatePanelRefcon, AEGP_PlatformViewRef, AEGP_PanelH,
                               AEGP_PanelFunctions1*, AEGP_PanelRefcon*>;
 using CommandArgs =
@@ -97,7 +94,7 @@ template <typename... Args>
 A_Err commandHook(Args... args) noexcept {
   const CommandArgs received(args...);
   if (std::get<2>(received) != g_menuCommand) return A_Err_NONE;
-  panelSuite()->AEGP_ToggleVisibility(kMatchName);  // open, bring to front, or close: the standard behaviour
+  panelSuite()->AEGP_ToggleVisibility(kMatchName);
   if (std::get<5>(received) != nullptr) *std::get<5>(received) = TRUE;
   return A_Err_NONE;
 }
@@ -112,10 +109,8 @@ A_Err updateMenuHook(AEGP_GlobalRefcon, AEGP_UpdateMenuRefcon, AEGP_WindowType) 
   return A_Err_NONE;
 }
 
-}  // namespace
+}
 
-// The Panelator order: the command, its menu item, the command hook, the update-menu hook, the create-panel
-// hook.
 bool registerPanel(AEGP_PluginID pluginId) {
   const Suites& suites = state().suites;
   A_Err err = suites.command->AEGP_GetUniqueCommand(&g_menuCommand);
@@ -133,4 +128,4 @@ bool registerPanel(AEGP_PluginID pluginId) {
   return err == A_Err_NONE;
 }
 
-}  // namespace wvp
+}

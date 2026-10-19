@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
-# Compiles every source file with -fsyntax-only on a machine without macOS or the Adobe SDK (Linux CI).
-#
-#   tests/syntax-check/check-syntax.sh            compile everything, in both WVP_DEBUG variants
-#   tests/syntax-check/check-syntax.sh --tidy     also run clang-tidy over the same translation units
-#
-# The Cocoa, WebKit and CoreFoundation headers are replaced by the declarations in stubs/. The Adobe SDK headers are
-# replaced by ae-stubs/ unless AE_SDK_ROOT points at a real SDK (then the real headers are used and checked).
-# Nothing here links or runs: a clean pass means the code parses and type-checks, not that it works on a Mac.
+# Syntax-checks every source file on Linux in both WVP_DEBUG variants, with stubs/ for Apple's headers and ae-stubs/
+# for the SDK unless AE_SDK_ROOT is set. --tidy also runs clang-tidy. A pass means it parses, not that it works.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -21,11 +15,8 @@ failures=0
 warnings=(-Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Wold-style-cast
   -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough -Wcast-align)
 
-# Plain C++: the platform-neutral core, the key routing and the unit tests.
 neutral_sources() { ls src/core/*.cpp src/mac/wvp_keys.cpp tests/unit/*.cpp; }
-# C++ that includes the AEGP SDK headers.
 sdk_sources() { ls src/ae/*.cpp; }
-# Objective-C++: the macOS layer, and the one AE file that must include Cocoa through the SDK.
 objcxx_sources() { ls src/mac/*.mm src/ae/*.mm; }
 
 sdk_includes() {
@@ -72,7 +63,6 @@ check_objcxx_one() {
   check_one "$clangxx" "$debug" "$file" "${extra[@]}"
 }
 
-# clang-tidy reads the same flags. The Objective-C++ files need the Objective-C flags too.
 tidy_one() {
   local file="$1"
   local -a flags extra=()
