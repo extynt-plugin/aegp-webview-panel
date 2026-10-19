@@ -12,8 +12,9 @@ point of this repository, and they are documented below so you can keep them whe
 The demo page shows the active composition's name (read through the AEGP suites) and has a button that runs
 ExtendScript with `AEGP_ExecuteScript` and prints the result.
 
-Status: version 0.1.0, macOS only. The code compiles and its platform-neutral parts are unit tested on Linux, but
-the macOS-specific behaviour has not been confirmed on a Mac yet. If you have one, the checklist in
+Status: version 0.1.0, macOS only. The platform-neutral parts are unit tested on Linux, and the plugin builds on
+macOS against the After Effects 26.5 SDK, but its behaviour inside a running After Effects has not been confirmed
+yet. If you have one, the checklist in
 [docs/mac-test.md](docs/mac-test.md) is the most useful contribution you can make; see also "Known remaining issues"
 below.
 
@@ -127,7 +128,7 @@ is waiting, so a burst of requests cannot freeze the interface.
 
 ## Keyboard and idle-loop gotchas
 
-These were found the hard way. All of them are handled in the code; this is why.
+Each of these is handled in the code.
 
 - **After Effects takes keys first.** In a docked panel Cmd+A selects all layers, the arrows move the time cursor,
   Delete edits the project, and Cmd+C/V/X/Z do nothing in the page. An `NSEvent` local monitor
