@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# The repository's coding limits, for every source file and script (no exceptions, no suppression comments):
-#   file <= 500 lines, function <= 80 lines, cyclomatic complexity <= 10, nesting <= 4, parameters <= 5.
-# C++ and Objective-C++ go through lizard (pip install lizard). Shell scripts get the file and function length checks
-# here, because lizard does not read shell. clang-tidy enforces the C++ limits as well (tests/syntax-check).
+# Checks the coding limits (file <= 500 lines, function <= 80, complexity <= 10, nesting <= 4, parameters <= 5).
+# C++ goes through lizard; shell scripts get the length checks here, since lizard does not read shell.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -33,8 +31,6 @@ check_lizard() {
     fail "lizard reported functions over the limits"
 }
 
-# Prints "file:line:name:length" for every shell function over the limit. A function starts at "name() {" and ends at
-# the next line that is exactly "}".
 long_shell_functions() {
   awk -v limit="$max_function_lines" '
     /^[A-Za-z_][A-Za-z0-9_]*\(\) *\{/ { name = $1; start = FNR }
