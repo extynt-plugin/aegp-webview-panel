@@ -1,8 +1,7 @@
 # Contributing: macOS test checklist
 
-Help wanted from anyone with a Mac, After Effects 25 or 26 and Xcode. The macOS-specific code has been compiled
-against stand-in headers on Linux, where only the syntax check and the platform-neutral unit tests can run, but it
-has not been exercised in a running After Effects. Please open an issue with each line as pass, fail (with what you
+Help wanted from anyone with a Mac, After Effects 25 or 26 and Xcode. The plugin builds on macOS against the
+After Effects 26.5 SDK, but it has not been exercised in a running After Effects. Please open an issue with each line as pass, fail (with what you
 saw), or not tried. The most useful extra is a Console.app log: filter on `[wvp]`.
 
 ## 1. Build
@@ -64,7 +63,7 @@ docked first, then repeat everything floating. Between rows click a layer in the
 
 ## 6. Idle-stall check
 
-The aim is to prove that nothing in the page can freeze the bridge.
+This checks that nothing in the page can freeze the bridge.
 
 1. In the keyboard area type a misspelt word such as `teh ` and a straight quote `"`: no red underline, no
    autocorrection, no smart-quote substitution, no popup.
