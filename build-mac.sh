@@ -54,7 +54,6 @@ parse_args() {
 
 plugins_dir() { echo "/Applications/Adobe After Effects $ae_year/Plug-ins"; }
 
-# Runs a command with sudo only when the destination is not writable by this user.
 privileged() {
   if [[ -w "$(plugins_dir)" ]]; then "$@"; else sudo "$@"; fi
 }

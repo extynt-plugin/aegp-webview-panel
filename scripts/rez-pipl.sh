@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
-# Compiles the PiPL (.r) into a data-fork .rsrc inside the plugin bundle, as the SDK's Xcode samples do through Xcode's
-# Rez build rule. Usage:
-#   rez-pipl.sh <AE SDK Examples dir> <PiPL .r file> <output .rsrc>
-# Rez is deprecated by Apple but still ships with Xcode. Xcode's exact command line is not visible from here, so a few
-# equivalent variants are tried in order and the first that yields a non-empty file wins. WVP_REZ_VERBOSE=1 shows every
-# attempt.
+# Usage: rez-pipl.sh <AE SDK Examples dir> <PiPL .r file> <output .rsrc>. Compiles the PiPL with Xcode's Rez, trying
+# a few equivalent command lines until one produces a non-empty file; WVP_REZ_VERBOSE=1 prints every attempt.
 set -euo pipefail
 
 sdk_examples="$1"
@@ -27,7 +23,6 @@ check_inputs() {
   [ -f "$source_r" ] || fail "PiPL source not found: $source_r"
 }
 
-# attempt LABEL REZ ARGS...: true when Rez produced a non-empty output file.
 attempt() {
   local label="$1" rez="$2" log status=0
   shift 2

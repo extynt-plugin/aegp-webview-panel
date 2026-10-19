@@ -1,5 +1,5 @@
-# The After Effects plugin bundle (macOS). Included from the top-level CMakeLists when WVP_BUILD_PLUGIN=ON.
-# Adobe's SDK is only referenced by path (AE_SDK_ROOT); nothing from it is copied into this repository.
+# The macOS plugin bundle, laid out like the SDK samples (.plugin, package type AEgx). The SDK is only referenced
+# through AE_SDK_ROOT; nothing from it is copied into this repository.
 
 if(NOT AE_SDK_ROOT AND DEFINED ENV{AE_SDK_ROOT})
   set(AE_SDK_ROOT "$ENV{AE_SDK_ROOT}")
@@ -39,18 +39,15 @@ add_library(wvpanel MODULE
   src/mac/wvp_webview.mm)
 
 target_include_directories(wvpanel PRIVATE src src/ae src/core src/mac)
-# SYSTEM keeps the SDK's own warnings out of our build log.
 target_include_directories(wvpanel SYSTEM PRIVATE
   "${WVP_SDK_EXAMPLES}/Headers" "${WVP_SDK_EXAMPLES}/Headers/SP" "${WVP_SDK_EXAMPLES}/Resources")
 target_link_libraries(wvpanel PRIVATE wvp_core "-framework CoreFoundation" "-framework Cocoa" "-framework WebKit")
 target_compile_definitions(wvpanel PRIVATE WVP_VERSION="${WVP_VERSION}" WVP_DEBUG=$<BOOL:${WVP_DEBUG}>)
 wvp_apply_flags(wvpanel)
 target_compile_options(wvpanel PRIVATE -fvisibility=hidden -fvisibility-inlines-hidden)
-# ARC for every .mm; the missing-super check catches an overridden Cocoa method that forgets to chain up.
 target_compile_options(wvpanel PRIVATE $<$<COMPILE_LANGUAGE:OBJCXX>:-fobjc-arc -Wobjc-missing-super-calls>)
 target_link_options(wvpanel PRIVATE -Wl,-dead_strip)
 
-# Bundle layout the SDK samples use: <name>.plugin, package type AEgx, executable and .rsrc named after the product.
 set_target_properties(wvpanel PROPERTIES
   BUNDLE TRUE
   BUNDLE_EXTENSION "plugin"

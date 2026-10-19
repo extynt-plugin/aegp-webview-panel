@@ -1,3 +1,4 @@
+# Builds the platform-neutral core and its unit tests, and the macOS plugin when WVP_BUILD_PLUGIN is on.
 cmake_minimum_required(VERSION 3.20)
 
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" WVP_VERSION_DEFAULT LIMIT_COUNT 1)
@@ -16,7 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# One strict warning set for every target. Warnings are errors.
 set(WVP_WARNING_FLAGS
   -Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Wold-style-cast
   -Woverloaded-virtual -Wnull-dereference -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough -Wcast-align)
@@ -25,7 +25,6 @@ function(wvp_apply_flags target)
   target_compile_options(${target} PRIVATE ${WVP_WARNING_FLAGS})
 endfunction()
 
-# Platform-neutral code: no SDK, no OS API beyond the C++ standard library.
 add_library(wvp_core STATIC
   src/core/wvp_json.cpp
   src/core/wvp_queue.cpp
