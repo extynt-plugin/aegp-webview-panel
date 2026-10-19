@@ -1,3 +1,4 @@
+// UTF-16 to UTF-8 conversion.
 #include "wvp_utf.h"
 
 namespace wvp {
@@ -27,7 +28,6 @@ void appendUtf8(std::string& out, char32_t cp) {
 bool isHigh(char16_t unit) { return unit >= 0xD800U && unit <= 0xDBFFU; }
 bool isLow(char16_t unit) { return unit >= 0xDC00U && unit <= 0xDFFFU; }
 
-// The code point that starts at `*text`; advances `*text` past it.
 char32_t nextCodePoint(const char16_t** text) {
   const char16_t first = **text;
   ++*text;
@@ -40,7 +40,7 @@ char32_t nextCodePoint(const char16_t** text) {
          (static_cast<char32_t>(second) - 0xDC00U);
 }
 
-}  // namespace
+}
 
 std::string utf16ToUtf8(const char16_t* text) {
   std::string out;
@@ -48,4 +48,4 @@ std::string utf16ToUtf8(const char16_t* text) {
   return out;
 }
 
-}  // namespace wvp
+}

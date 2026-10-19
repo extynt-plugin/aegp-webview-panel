@@ -1,7 +1,5 @@
-// Stand-in for the Adobe SDK header of the same name, for CI machines that do not have the SDK (it cannot be
-// redistributed). Declares only what this repository uses, with the same names and signatures as the SDK.
-// When AE_SDK_ROOT is set, check-syntax.sh uses the real headers instead and this directory is not on the
-// path.
+// Stand-in for the SDK header of the same name, for CI machines without the SDK. Only what this repository
+// uses; with AE_SDK_ROOT set, check-syntax.sh uses the real headers.
 #pragma once
 
 #include <cstdint>

@@ -1,5 +1,5 @@
-// The macOS half of wvp_platform.h that is not about one panel: process-wide setup and the entry points the
-// AEGP side calls.
+// Process-wide macOS setup: WebKit text-correction defaults (in memory only), the key monitor, and the
+// observers that re-read AE's theme when a window becomes key or the app becomes active.
 #import "wvp_mac.h"
 
 #include "wvp_log.h"
@@ -11,9 +11,6 @@ using namespace wvp::mac;
 
 NSMutableArray* g_observers = nil;
 
-// WebKit's autocorrect, text replacement and spellcheck popups run a nested event loop that stalls After
-// Effects' idle hook. WebKit reads these keys from the standard defaults; registering them fills only the
-// in-memory registration domain, so nothing is written to After Effects' preferences.
 void registerQuietWebDefaults() {
   [[NSUserDefaults standardUserDefaults] registerDefaults:@{
     @"WebAutomaticSpellingCorrectionEnabled" : @NO,
@@ -23,7 +20,7 @@ void registerQuietWebDefaults() {
     @"WebAutomaticDashSubstitutionEnabled" : @NO,
     @"WebGrammarCheckingEnabled" : @NO,
     @"WebAutomaticLinkDetectionEnabled" : @NO,
-    @"NSAutoFillHeuristicControllerEnabled" : @NO  // AppKit adds "AutoFill >" to the context menu otherwise
+    @"NSAutoFillHeuristicControllerEnabled" : @NO
   }];
 }
 
@@ -31,9 +28,6 @@ void pushThemeToAllPanels() {
   for (WvpWebView* web in liveViews().allObjects) [web.owner pushTheme];
 }
 
-// After Effects announces no brightness change to a plugin. A theme change needs the Preferences window, so
-// the colour is re-read when a window becomes key or the application becomes active (which covers closing
-// Preferences).
 void observeTheme() {
   g_observers = [NSMutableArray array];
   NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
@@ -47,7 +41,7 @@ void observeTheme() {
   }
 }
 
-}  // namespace
+}
 
 namespace wvp::platform {
 
@@ -69,7 +63,7 @@ void* createPanel(void* nativeView) {
   WvpPanel* panel = [[WvpPanel alloc] init];
   [panel attachTo:container];
   [panel loadPage];
-  return const_cast<void*>(CFBridgingRetain(panel));  // never released: After Effects has no destroy callback
+  return const_cast<void*>(CFBridgingRetain(panel));
 }
 
 void reloadPanel(void* refcon) {
@@ -85,4 +79,4 @@ void setKeyLogging(bool enabled) {
   g_logKeys.store(enabled);
 }
 
-}  // namespace wvp::platform
+}

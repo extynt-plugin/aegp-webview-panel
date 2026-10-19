@@ -1,4 +1,4 @@
-// The macOS logger: NSLog, which Console.app shows under the After Effects process (filter on "[wvp]").
+// The macOS logger: NSLog, visible in Console.app under the After Effects process (filter on "[wvp]").
 #import <Foundation/Foundation.h>
 
 #include <exception>
@@ -11,7 +11,7 @@ void logLine(const std::string& line) { NSLog(@"[wvp] %s", line.c_str()); }
 
 void logDroppedException(const char* where) {
   try {
-    throw;  // only ever called from inside a catch block
+    throw;
   } catch (const std::exception& error) {
     logLine(std::string("exception dropped at ") + where + ": " + error.what());
   } catch (...) {
@@ -19,4 +19,4 @@ void logDroppedException(const char* where) {
   }
 }
 
-}  // namespace wvp
+}

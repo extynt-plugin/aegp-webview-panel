@@ -1,3 +1,4 @@
+// Acquires and releases the suites. The panel suite is held by value, as its header needs Objective-C++.
 #include "wvp_suites.h"
 
 #include "wvp_log.h"
@@ -6,8 +7,6 @@ namespace wvp {
 
 namespace {
 
-// The Workspace Panel Suite, by value: its header cannot be included from plain C++ (wvp_sdk.h). The panel
-// code (wvp_panel_ae.mm) checks the version against the SDK's kAEGPPanelSuiteVersion1 at compile time.
 constexpr char kWvpPanelSuite[] = "AEGP Workspace Panel Suite";
 constexpr int kWvpPanelSuiteVersion = 1;
 
@@ -25,7 +24,7 @@ bool acquireOne(Suites& suites, const char* name, int version, const Suite*& slo
   return true;
 }
 
-}  // namespace
+}
 
 bool acquireSuites(const SPBasicSuite* basic, Suites& suites) {
   suites.basic = basic;
@@ -50,4 +49,4 @@ void releaseSuites(Suites& suites) {
   suites = Suites();
 }
 
-}  // namespace wvp
+}

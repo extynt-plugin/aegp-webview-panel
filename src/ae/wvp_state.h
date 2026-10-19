@@ -1,5 +1,5 @@
-// The plugin's process-wide state. SDK types live here; platform code never includes this file (it uses
-// wvp_host.h).
+// Process-wide plugin state: the suites, the saved AEGP_CauseIdleRoutinesToBeCalled pointer (the one AEGP
+// call that is safe from any thread) and the running and re-entrancy flags. Not for platform code.
 #pragma once
 
 #include <atomic>
@@ -16,13 +16,11 @@ struct PluginState {
   AEGP_PluginID id = 0;
   Suites suites;
   JobQueue queue;
-  // AEGP_CauseIdleRoutinesToBeCalled, fetched on the main thread at startup: the one AEGP function that is
-  // safe to call from any other thread (the SDK says so), and the way to make AE run the idle hook soon.
   std::atomic<CauseIdleFn> causeIdle{nullptr};
-  std::atomic<bool> running{false};  // false before startup finished and after the death hook began
-  bool draining = false;             // main thread only: the idle hook is running jobs (re-entrancy guard)
+  std::atomic<bool> running{false};
+  bool draining = false;
 };
 
 PluginState& state();
 
-}  // namespace wvp
+}

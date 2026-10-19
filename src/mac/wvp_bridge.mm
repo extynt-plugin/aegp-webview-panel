@@ -1,8 +1,5 @@
-// The page-to-plugin half of the message bridge: WKScriptMessageHandler.
-//
-// The handler runs on the main thread but OUTSIDE any After Effects hook, where AEGP calls are unsupported.
-// So it only translates the message into a Job and queues it (wvp::submitJob); the idle hook runs the job and
-// the job's reply evaluates the answer in the page. See src/ae/wvp_entry.cpp.
+// The page-to-plugin message handler. It runs outside any AE hook, so it only queues a Job. The reply holds
+// the panel weakly and is dropped if the page has reloaded since, because request ids restart in every page.
 #import "wvp_mac.h"
 
 #include <utility>
@@ -16,9 +13,6 @@ namespace {
 
 using namespace wvp::mac;
 
-// The reply holds the panel weakly: a panel closed while its request ran simply gets no answer. It also
-// remembers which page load asked, and is dropped if the page has been reloaded or navigated since (request
-// ids restart at 1 in every page, so a late answer could otherwise resolve the wrong promise).
 wvp::Reply replyTo(WvpPanel* panel, long long requestId) {
   __weak WvpPanel* weakPanel = panel;
   const NSUInteger generation = panel.generation;
@@ -38,11 +32,10 @@ bool isTrusted(WvpPanel* panel, WKScriptMessage* message) {
          wvp::isTrustedPageUrl(text, stdString(panel.devOrigin), stdString(panel.webPrefix));
 }
 
-}  // namespace
+}
 
 @implementation WvpPanel (Bridge)
 
-// message.body is {id: number, op: string, args: string} (see the shim in src/core/wvp_scripts.cpp).
 - (void)handleBridgeMessage:(WKScriptMessage*)message {
   if (!isTrusted(self, message)) {
     wvp::logLine("bridge message from an untrusted page ignored");

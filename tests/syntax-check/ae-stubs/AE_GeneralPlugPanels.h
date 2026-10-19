@@ -1,5 +1,4 @@
-// Stand-in for the Adobe SDK header of the same name (see AEConfig.h in this directory): only what this
-// repository uses.
+// Stand-in for the SDK header of the same name (see AEConfig.h).
 #pragma once
 
 #include "AE_GeneralPlug.h"

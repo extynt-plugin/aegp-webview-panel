@@ -1,3 +1,5 @@
+// Key routing rules. Editing shortcuts and Home/End/Page keys are actions, Cmd+arrow and Cmd+Backspace are
+// text editing, other Cmd and Ctrl combinations belong to AE, and plain keys go to the page.
 #include "wvp_keys.h"
 
 #include <cmath>
@@ -26,7 +28,6 @@ bool isNavigationOrDelete(unsigned short code) {
          code == kKeyBackspace || code == kKeyForwardDelete;
 }
 
-// Home, End, Page Up, Page Down: WebKit does not take them as text and would hand them to After Effects.
 Action editingKeyAction(unsigned short code, bool shift) {
   switch (code) {
     case kKeyHome:
@@ -62,11 +63,8 @@ Action commandShortcut(char base, bool shift) {
 
 KeyDecision decision(Route route, Action action = Action::None) { return KeyDecision{route, action}; }
 
-}  // namespace
+}
 
-// Cmd+C/V/X/A and Cmd+Z / Shift+Cmd+Z, and plain Home/End/Page keys, are actions. Cmd with an arrow or
-// Backspace is text editing (line start, delete to line start) and is delivered like any key. Every other Cmd
-// or Ctrl combination is After Effects' own. Plain, Option and Shift keys are delivered.
 KeyDecision classifyKey(const KeyInput& key) {
   if (!key.command && !key.control) {
     const Action editing = key.option ? Action::None : editingKeyAction(key.keyCode, key.shift);
@@ -83,7 +81,7 @@ namespace {
 struct ActionInfo {
   Action action;
   const char* selector;
-  const char* script;  // "" when the page cannot do it (Paste needs a user gesture; paging has no fallback)
+  const char* script;
 };
 
 constexpr ActionInfo kActions[] = {
@@ -112,7 +110,7 @@ const ActionInfo* infoFor(Action action) {
   return nullptr;
 }
 
-}  // namespace
+}
 
 std::string actionSelector(Action action) {
   const ActionInfo* info = infoFor(action);
@@ -130,4 +128,4 @@ bool isResendOf(const KeyStamp& routed, const KeyStamp& now) {
          std::fabs(routed.timestamp - now.timestamp) < kSameInstantSeconds;
 }
 
-}  // namespace wvp::mac
+}

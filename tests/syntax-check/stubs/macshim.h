@@ -1,4 +1,4 @@
-// Mac type stand-ins for a Linux syntax check only (the real ones come from MacTypes.h).
+// Linux syntax-check stand-ins for the MacTypes.h types.
 #pragma once
 using Fixed = int;
 using Boolean = unsigned char;

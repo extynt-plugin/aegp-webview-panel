@@ -1,6 +1,5 @@
-// Declarations of only the Foundation/AppKit/WebKit API this repository uses, so the Objective-C++ sources
-// can be syntax-checked on Linux. Not a real SDK: nothing here links or runs. Apple's headers are used on a
-// Mac.
+// Declarations of the Foundation, AppKit and WebKit API the sources use, so the Objective-C++ files can be
+// syntax-checked on Linux. Nothing here links or runs.
 #pragma once
 
 #include <cstddef>

@@ -1,4 +1,4 @@
-// Syntax-check stand-in (see Foundation/Foundation.h): the WebKit API the sources use.
+// Linux syntax-check stand-in for the WebKit API the sources use.
 #pragma once
 
 #include "Cocoa/Cocoa.h"

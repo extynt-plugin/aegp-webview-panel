@@ -1,3 +1,4 @@
+// The plugin state, submitJob and hostTheme (see wvp_host.h).
 #include "wvp_host.h"
 
 #include <utility>
@@ -30,4 +31,4 @@ std::optional<Theme> hostTheme() {
   return themeFromChannels16(color.red, color.green, color.blue);
 }
 
-}  // namespace wvp
+}

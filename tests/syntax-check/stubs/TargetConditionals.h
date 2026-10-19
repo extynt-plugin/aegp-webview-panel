@@ -1,4 +1,4 @@
-// Stand-in for Apple's TargetConditionals.h (Linux syntax check only).
+// Linux syntax-check stand-in for Apple's TargetConditionals.h.
 #pragma once
 #define TARGET_OS_MAC 1
 #define TARGET_OS_IPHONE 0
